@@ -336,7 +336,7 @@ $(document).ready(function () {
 				}
 			});
 		});
-		getFilteredTopics();
+		filter_delay(getFilteredTopics);
 	} else {
 		getFilteredTopics();
 	}
