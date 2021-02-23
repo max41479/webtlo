@@ -156,6 +156,9 @@ try {
             <li class="menu"><a href="#journal" class="menu">Журнал</a></li>
             <li class="menu"><a href="#manual" class="menu">О программе</a></li>
         </ul>
+        <div id="new_version_available" style="display: none; position: absolute; right: 25px; top: 5px;">
+            <p id="new_version_description" title=""></p>
+        </div>
         <div id="content">
             <div id="main" class="content">
                 <select id="main-subsections">
