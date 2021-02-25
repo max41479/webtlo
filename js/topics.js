@@ -38,6 +38,58 @@ $(document).ready(function () {
 		});
 	});
 
+	// скачивание т.-файлов хранимых раздач по спискам с форума
+	$(".tor_download_by_keepers_list").on("click", function () {
+		var forum_id = $("#main-subsections").val();
+		var replace_passkey = $(this).val();
+		var config = $("#config").serialize();
+		if ($.isEmptyObject(forum_id)) {
+			return false;
+		}
+		$.ajax({
+			type: "POST",
+			url: "php/actions/get_reports.php",
+			data: {
+				forum_id: forum_id,
+				return_only_topic_ids: true
+			},
+			success: function (response) {
+				response = $.parseJSON(response);
+				$("#log").append(response.log);
+
+				// скачивание т.-файлов выделенных топиков
+				var topics_ids = $.param(response.report.map( s => ({name:"topics_ids[]", value:s}) ));
+				if ($.isEmptyObject(topics_ids)) {
+					showResultTopics("Не удалось получить список раздач для загрузки");
+					return false;
+				}
+				$("#process").text("Скачивание торрент-файлов...");
+				$.ajax({
+					type: "POST",
+					context: this,
+					url: "php/actions/get_torrent_files.php",
+					data: {
+						cfg: config,
+						topics_ids: topics_ids,
+						forum_id: forum_id,
+						replace_passkey: replace_passkey
+					},
+					beforeSend: function () {
+						block_actions();
+					},
+					complete: function () {
+						block_actions();
+					},
+					success: function (response) {
+						response = $.parseJSON(response);
+						$("#log").append(response.log);
+						showResultTopics(response.result);
+					},
+				});
+			},
+		});
+	});
+
 	// "чёрный" список раздач
 	$("#tor_blacklist").on("click", function () {
 		var topics_ids = $("#topics").serialize();

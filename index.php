@@ -202,6 +202,15 @@ try {
                                 <i class="fa fa-download download-replace" aria-hidden="true"></i>
                                 <i class="fa fa-asterisk download-replace-super" aria-hidden="true"></i>
                             </button>
+                            <button type="button" class="tor_download_by_keepers_list" value="0" title="Скачать *.torrent-файлы хранимых раздач (по спсикам с форума) текущего подраздела в каталог">
+                                <i class="fa fa-download download-replace" aria-hidden="true"></i>
+                                <i class="fa fa-th-list download-replace-super" aria-hidden="true"></i>
+                            </button>
+                            <button type="button" class="tor_download_by_keepers_list" value="1" title="Скачать *.torrent-файлы хранимых раздач (по спсикам с форума) текущего подраздела в каталог с заменой Passkey">
+                                <i class="fa fa-download download-replace" aria-hidden="true"></i>
+                                <i class="fa fa-th-list download-replace-super" aria-hidden="true"></i>
+                                <i class="fa fa-asterisk download-replace-super" aria-hidden="true"></i>
+                            </button>
                         </div>
                         <div id="toolbar-control-topics">
                             <button type="button" id="tor_blacklist" value="1" title="Включить выделенные раздачи в чёрный список или наоборот исключить">
