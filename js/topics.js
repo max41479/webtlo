@@ -263,26 +263,6 @@ $(document).ready(function () {
 		$(".filter_rule_one").toggle(500);
 	});
 
-	// события при выборе свойств фильтра
-	$("#topics_filter").find("input[type=text], input[type=search]").on("spin input", function () {
-		filter_delay(getFilteredTopics);
-	});
-
-	$("#topics_filter input[type=radio], #topics_filter input[type=checkbox], #filter_date_release").on("change", function () {
-		if (!filter_hold) {
-			filter_delay(getFilteredTopics);
-		}
-	});
-
-	$("#topics_filter").find("input[type=radio], input[type=checkbox]").on("click", function (e) {
-		filter_hold = e.ctrlKey;
-	}).on("keyup", function (e) {
-		if (e.keyCode == 17) {
-			filter_hold = false;
-			filter_delay(getFilteredTopics);
-		}
-	});
-
 	// есть/нет хранители
 	$(".topics_filter .keepers").on("change", function () {
 		if ($(this).prop("checked")) {
@@ -308,6 +288,26 @@ $(document).ready(function () {
 					$("input[name=not_keepers_seeders]").prop("checked", false);
 					break;
 			}
+		}
+	});
+
+	// события при выборе свойств фильтра
+	$("#topics_filter").find("input[type=text], input[type=search]").on("spin input", function () {
+		filter_delay(getFilteredTopics);
+	});
+
+	$("#topics_filter input[type=radio], #topics_filter input[type=checkbox], #filter_date_release").on("change", function () {
+		if (!filter_hold) {
+			filter_delay(getFilteredTopics);
+		}
+	});
+
+	$("#topics_filter").find("input[type=radio], input[type=checkbox]").on("click", function (e) {
+		filter_hold = e.ctrlKey;
+	}).on("keyup", function (e) {
+		if (e.keyCode == 17) {
+			filter_hold = false;
+			filter_delay(getFilteredTopics);
 		}
 	});
 
