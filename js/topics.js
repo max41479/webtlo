@@ -285,6 +285,20 @@ $(document).ready(function () {
 			}
 		}
 	});
+  
+  // есть/нет сиды-хранители
+	$(".topics_filter .keepers_seeders").on("change", function () {
+		if ($(this).prop("checked")) {
+			switch ($(this).attr('name')) {
+				case 'not_keepers_seeders':
+					$("input[name=is_keepers_seeders]").prop("checked", false);
+					break;
+				case 'is_keepers_seeders':
+					$("input[name=not_keepers_seeders]").prop("checked", false);
+					break;
+			}
+		}
+	});
 
 	// события при выборе свойств фильтра
 	$("#topics_filter input[type=radio], #topics_filter input[type=checkbox], #filter_date_release").on("change", function () {
