@@ -325,7 +325,15 @@ $(document).ready(function () {
 	});
 
 	// события при выборе свойств фильтра
-	$("#topics_filter input[type=radio], #topics_filter input, #filter_date_release").on("change input spinstop", function () {
+	$("#topics_filter input[type=radio], #topics_filter input[type=checkbox], #filter_date_release").on("change", function () {
+		// запоминаем параметры фильтра в куки
+		Cookies.set("filter-options", $("#topics_filter").serializeAllArray());
+		if ($("#auto_apply_filter_enable").prop("checked")) {
+			filter_delay(getFilteredTopics);
+		}
+	});
+
+	$("#topics_filter").find("input[type=text], input[type=search]").on("spinstop input", function () {
 		// запоминаем параметры фильтра в куки
 		Cookies.set("filter-options", $("#topics_filter").serializeAllArray());
 		if ($("#auto_apply_filter_enable").prop("checked")) {
