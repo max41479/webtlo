@@ -156,6 +156,9 @@ try {
             <li class="menu"><a href="#journal" class="menu">Журнал</a></li>
             <li class="menu"><a href="#manual" class="menu">О программе</a></li>
         </ul>
+        <div id="new_version_available">
+            <p id="new_version_description" title=""></p>
+        </div>
         <div id="content">
             <div id="main" class="content">
                 <select id="main-subsections">
@@ -191,17 +194,18 @@ try {
                                 <i class="fa fa-square-o" aria-hidden="true"></i>
                             </button>
                         </div>
-                        <div id="toolbar-new-torrents">
-                            <button type="button" id="tor_add" title="Добавить выделенные раздачи текущего подраздела в торрент-клиент">
-                                <i class="fa fa-plus" aria-hidden="true"></i>
-                            </button>
+                        <button type="button" id="tor_add" title="Добавить выделенные раздачи текущего подраздела в торрент-клиент">
+                            <i class="fa fa-plus" aria-hidden="true"></i>
+                        </button>
+                        <div class="tor_download_dropdown">
                             <button type="button" class="tor_download" value="0" title="Скачать *.torrent файлы выделенных раздач текущего подраздела в каталог">
                                 <i class="fa fa-download" aria-hidden="true"></i>
                             </button>
-                            <button type="button" class="tor_download" value="1" title="Скачать *.torrent-файлы выделенных раздач текущего подраздела в каталог с заменой Passkey">
-                                <i class="fa fa-download download-replace" aria-hidden="true"></i>
-                                <i class="fa fa-asterisk download-replace-super" aria-hidden="true"></i>
-                            </button>
+                            <select id="tor_download_options">
+                                <option class="tor_download" value="1" title="Скачать *.torrent-файлы выделенных раздач текущего подраздела в каталог с заменой Passkey">с заменой Passkey</option>
+                                <option class="tor_download_by_keepers_list" value="0" title="Скачать *.torrent-файлы хранимых раздач (по спсикам с форума) текущего подраздела в каталог">по спсикам с форума</option>
+                                <option class="tor_download_by_keepers_list" value="1" title="Скачать *.torrent-файлы хранимых раздач (по спсикам с форума) текущего подраздела в каталог с заменой Passkey">по спсикам с форума и с заменой Passkey</option>
+                            </select>
                         </div>
                         <div id="toolbar-control-topics">
                             <button type="button" id="tor_blacklist" value="1" title="Включить выделенные раздачи в чёрный список или наоборот исключить">
@@ -228,6 +232,9 @@ try {
                         </button>
                         <button id="control_torrents" name="control_torrents" type="button" title="Выполнить регулировку раздач в торрент-клиентах">
                             <i class="fa fa-adjust" aria-hidden="true"></i> Регулировка раздач
+                        </button>
+                        <button id="apply_filter" type="button" title="Применить фильтр">
+                            <i class="fa fa-check" aria-hidden="true"></i>
                         </button>
                         <div id="indication">
                             <i id="loading" class="fa fa-spinner fa-pulse"></i>
@@ -390,7 +397,7 @@ try {
                                         <input type="text" id="filter_rule" name="filter_rule" size="1" value="<?php echo $cfg['rule_topics'] ?>" />
                                     </label>
                                 </fieldset>
-                                <fieldset class="filter_rule_interval" style="display: none">
+                                <fieldset class="filter_rule_interval">
                                     <label class="filter_rule_value" title="Начальное количество сидов">
                                         от
                                         <input type="text" id="filter_rule_from" name="filter_rule_interval[from]" size="1" value="0" />
@@ -398,6 +405,14 @@ try {
                                     <label class="filter_rule_value" title="Конечное количество сидов">
                                         до
                                         <input type="text" id="filter_rule_to" name="filter_rule_interval[to]" size="1" value="<?php echo $cfg['rule_topics'] ?>" />
+                                    </label>
+                                </fieldset>
+                            </div>
+                            <div class="filter_block ui-widget" title="Автоприменение фильтра">
+                                <fieldset>
+                                    <label>
+                                        <input type="checkbox" id="auto_apply_filter_enable" name="auto_apply_filter_enable" class="default" checked />
+                                        Авто<br>фильтр
                                     </label>
                                 </fieldset>
                             </div>
