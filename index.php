@@ -134,7 +134,7 @@ try {
 
 <head>
     <meta charset="utf-8" />
-    <title>web-TLO-2.2.12</title>
+    <title>web-TLO-2.2.13</title>
     <script src="jquery/jquery.js"></script>
     <script src="jquery/jquery-ui.js"></script>
     <script src="jquery/external/datepicker-ru.js"></script>
@@ -156,6 +156,9 @@ try {
             <li class="menu"><a href="#journal" class="menu">Журнал</a></li>
             <li class="menu"><a href="#manual" class="menu">О программе</a></li>
         </ul>
+        <div id="new_version_available">
+            <p id="new_version_description" title=""></p>
+        </div>
         <div id="content">
             <div id="main" class="content">
                 <select id="main-subsections">
@@ -191,17 +194,18 @@ try {
                                 <i class="fa fa-square-o" aria-hidden="true"></i>
                             </button>
                         </div>
-                        <div id="toolbar-new-torrents">
-                            <button type="button" id="tor_add" title="Добавить выделенные раздачи текущего подраздела в торрент-клиент">
-                                <i class="fa fa-plus" aria-hidden="true"></i>
-                            </button>
+                        <button type="button" id="tor_add" title="Добавить выделенные раздачи текущего подраздела в торрент-клиент">
+                            <i class="fa fa-plus" aria-hidden="true"></i>
+                        </button>
+                        <div class="tor_download_dropdown">
                             <button type="button" class="tor_download" value="0" title="Скачать *.torrent файлы выделенных раздач текущего подраздела в каталог">
                                 <i class="fa fa-download" aria-hidden="true"></i>
                             </button>
-                            <button type="button" class="tor_download" value="1" title="Скачать *.torrent-файлы выделенных раздач текущего подраздела в каталог с заменой Passkey">
-                                <i class="fa fa-download download-replace" aria-hidden="true"></i>
-                                <i class="fa fa-asterisk download-replace-super" aria-hidden="true"></i>
-                            </button>
+                            <select id="tor_download_options">
+                                <option class="tor_download" value="1" title="Скачать *.torrent-файлы выделенных раздач текущего подраздела в каталог с заменой Passkey">с заменой Passkey</option>
+                                <option class="tor_download_by_keepers_list" value="0" title="Скачать *.torrent-файлы хранимых раздач (по спсикам с форума) текущего подраздела в каталог">по спсикам с форума</option>
+                                <option class="tor_download_by_keepers_list" value="1" title="Скачать *.torrent-файлы хранимых раздач (по спсикам с форума) текущего подраздела в каталог с заменой Passkey">по спсикам с форума и с заменой Passkey</option>
+                            </select>
                         </div>
                         <div id="toolbar-control-topics">
                             <button type="button" id="tor_blacklist" value="1" title="Включить выделенные раздачи в чёрный список или наоборот исключить">
@@ -365,6 +369,16 @@ try {
                                         есть хранители
                                     </label>
                                 </fieldset>
+                                <fieldset>
+                                    <label title="Отображать только те раздачи, которые никто не сидирует из числа других хранителей">
+                                        <input type="checkbox" class="default keepers_seeders" name="not_keepers_seeders" />
+                                        нет сидов-хранителей
+                                    </label>
+                                    <label title="Отображать только те раздачи, которые кто-то сидирует из числа других хранителей">
+                                        <input type="checkbox" class="keepers_seeders" name="is_keepers_seeders" />
+                                        есть сиды-хранители
+                                    </label>
+                                </fieldset>
                                 <hr />
                                 <label title="Использовать интервал сидов">
                                     <input type="checkbox" name="filter_interval" />
@@ -383,7 +397,7 @@ try {
                                         <input type="text" id="filter_rule" name="filter_rule" size="1" value="<?php echo $cfg['rule_topics'] ?>" />
                                     </label>
                                 </fieldset>
-                                <fieldset class="filter_rule_interval" style="display: none">
+                                <fieldset class="filter_rule_interval">
                                     <label class="filter_rule_value" title="Начальное количество сидов">
                                         от
                                         <input type="text" id="filter_rule_from" name="filter_rule_interval[from]" size="1" value="0" />

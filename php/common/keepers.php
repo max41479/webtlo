@@ -43,9 +43,9 @@ $numberForumsScanned = 0;
 if (isset($cfg['subsections'])) {
     // получаем данные
     foreach ($cfg['subsections'] as $forum_id => $subsection) {
-        $topic_id = $reports->search_topic_id($subsection['na']);
+        $topicID = $reports->search_topic_id($subsection['na']);
 
-        if (empty($topic_id)) {
+        if (empty($topicID)) {
             Log::append("Error: Не удалось найти тему со списком для подраздела № $forum_id");
             continue;
         } else {
@@ -54,7 +54,7 @@ if (isset($cfg['subsections'])) {
 
         // Log::append("Сканирование подраздела № $forum_id...");
 
-        $keepers = $reports->scanning_viewtopic($topic_id);
+        $keepers = $reports->scanning_viewtopic($topicID);
 
         if (!empty($keepers)) {
             foreach ($keepers as &$keeper) {
@@ -65,23 +65,24 @@ if (isset($cfg['subsections'])) {
                     continue;
                 }
                 foreach ($keeper['topics_ids'] as $index => $keeperTopicsIDs) {
-                    $topics_ids = array_chunk($keeperTopicsIDs, 249);
-                    foreach ($topics_ids as $topics_ids) {
+                    $topicsIDsChunks = array_chunk($keeperTopicsIDs, 199);
+                    foreach ($topicsIDsChunks as $topicsIDs) {
                         $select = str_repeat(
-                            'SELECT ?,?,?,? UNION ALL ',
-                            count($topics_ids) - 1
-                        ) . 'SELECT ?,?,?,?';
-                        foreach ($topics_ids as $topic_id) {
-                            $keepers_topics_ids[] = $topic_id;
-                            $keepers_topics_ids[] = $keeper['nickname'];
-                            $keepers_topics_ids[] = $keeper['posted'];
-                            $keepers_topics_ids[] = $index;
+                                'SELECT ?,?,?,?,? UNION ALL ',
+                                count($topicsIDs) - 1
+                            ) . 'SELECT ?,?,?,?,?';
+                        foreach ($topicsIDs as $topicID) {
+                            $keepersTopicsIDs[] = $topicID;
+                            $keepersTopicsIDs[] = $keeper['nickname'];
+                            $keepersTopicsIDs[] = $keeper['posted'];
+                            $keepersTopicsIDs[] = $index;
+                            $keepersTopicsIDs[] = null;
                         }
                         Db::query_database(
-                            "INSERT INTO temp.KeepersNew (id,nick,posted,complete) $select",
-                            $keepers_topics_ids
+                            "INSERT INTO temp.KeepersNew (id,nick,posted,complete,seeding) $select",
+                            $keepersTopicsIDs
                         );
-                        unset($keepers_topics_ids);
+                        unset($keepersTopicsIDs);
                         unset($select);
                     }
                 }
@@ -103,14 +104,21 @@ if ($count_keepers[0] > 0) {
     Log::append("Просканировано подразделов: " . $numberForumsScanned . " шт.");
     Log::append("Запись в базу данных списка раздач других хранителей...");
 
-    Db::query_database("INSERT INTO Keepers SELECT * FROM temp.KeepersNew");
-
     Db::query_database(
         "DELETE FROM Keepers WHERE id || nick NOT IN (
             SELECT Keepers.id || Keepers.nick FROM temp.KeepersNew
             LEFT JOIN Keepers ON temp.KeepersNew.id = Keepers.id AND temp.KeepersNew.nick = Keepers.nick
             WHERE Keepers.id IS NOT NULL
-        )"
+        ) AND posted IS NOT NULL"
+    );
+
+    Db::query_database(
+        "INSERT INTO Keepers 
+            SELECT t.id, t.nick, t.posted, t.complete, k.seeding FROM temp.KeepersNew AS t
+            LEFT JOIN Keepers AS k ON k.id = t.id AND k.nick = t.nick
+            UNION ALL
+            SELECT k.id, k.nick, t.posted, k.complete, k.seeding FROM Keepers AS k
+            LEFT JOIN temp.KeepersNew AS t ON k.id = t.id AND k.nick = t.nick"
     );
 }
 
